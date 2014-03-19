@@ -1,6 +1,6 @@
 MacSetups
 =========
-Topic : Setup NotePadpp as Default Editor in Mac
+Topic 0 : Setup NotePadpp as Default Editor in Mac
 
     0. Download & Install Crossover
     
