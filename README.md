@@ -2,20 +2,22 @@ MacSetups
 =========
 Setup NotePadpp as Default Editor in Mac
 
-Download & Install Crossover
+0. Download & Install Crossover
 
-http://www.codeweavers.com/products/crossover-mac/download/
+1. http://www.codeweavers.com/products/crossover-mac/download/
 
-Install notepad++
+2. Install notepad++
 
-Create file notepad in /usr/bin,
+3. Create file notepad in /usr/bin,
 
-Add following line to it (Note, I have Cross Over 2, add appropriate path)
+4. Add following line to it (Note, I have Cross Over 2, add appropriate path)
 
   /Applications/CrossOver\ 2.app/Contents/SharedSupport/CrossOver/bin/wine -cx-app notepad++.exe $1 &
 
-Change Permission
+5. Change Permission
+
   chmod 711 /usr/bin/notepad
 
-Start Using notepad++
+6. Start Using notepad++
+
   notepad sample.sh
