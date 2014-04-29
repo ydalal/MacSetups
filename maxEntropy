@@ -1,0 +1,64 @@
+package classification;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
+import cc.mallet.classify.Classifier;
+import cc.mallet.classify.ClassifierTrainer;
+import cc.mallet.classify.MaxEntTrainer;
+import cc.mallet.pipe.CharSequence2TokenSequence;
+import cc.mallet.pipe.CharSequenceLowercase;
+import cc.mallet.pipe.SerialPipes;
+import cc.mallet.pipe.TokenSequence2FeatureSequence;
+import cc.mallet.pipe.TokenSequenceRemoveStopwords;
+import cc.mallet.pipe.iterator.CsvIterator;
+import cc.mallet.types.InstanceList;
+
+public class trainclassifiers {
+	
+	public static void main(String args[]) throws IOException {
+		String dir = "C:\\Users\\ydalal\\Desktop\\yelp\\";
+		String fName = "reviews_WithUsefulVote";
+		String suff = ".dat";
+		// index 0,20 inclusive.
+		for (int index = 0; index < 21; index++) {
+			String inputFname = dir + fName + index + suff;
+			String outputFname = inputFname + ".model";
+			FileOutputStream out_write = new FileOutputStream(outputFname);
+			ObjectOutputStream oos = new ObjectOutputStream(out_write);
+			
+			ArrayList pipeList = new ArrayList();
+			pipeList.add(new CharSequenceLowercase());
+			pipeList.add(new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")));
+			pipeList.add(new TokenSequenceRemoveStopwords(new File("C:\\Users\\ydalal\\Desktop\\yelp\\tools\\mallet-2.0.7\\stoplists\\en.txt"), "UTF-8", false, false, false));
+			pipeList.add(new TokenSequence2FeatureSequence());
+			InstanceList instances = new InstanceList(new SerialPipes(pipeList));
+			
+			System.out.println(inputFname);
+			
+			Reader fileReader = new InputStreamReader(new FileInputStream(inputFname), "UTF-8");
+			instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1)); // data,// label,// name,// fields
+			ClassifierTrainer trainer = new MaxEntTrainer();
+			Classifier model = null;
+			
+			try{
+				model=trainer.train(instances);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try {
+				oos.writeObject(model);
+				oos.flush();
+			} catch (Exception e) {
+				System.out.println("Problem serializing: " + e);
+			}
+		}
+	}
+}
