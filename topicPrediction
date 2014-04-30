@@ -1,0 +1,16 @@
+package feature_generation;
+
+import java.text.DecimalFormat;
+
+
+public class topicPrediction {
+	public static void main(String args[]){
+	    DecimalFormat df = new DecimalFormat("#.####");
+		inferTopicModel obj=new inferTopicModel("topic_reviews.model_500");
+//		ParallelTopicModel model=obj.model;
+		double[] topics=obj.getTopicDitribution("Nobuo shows his unique talents with everything on the menu. Carefully crafted features with much to drink. Start with the pork belly buns and a stout. Then go on until you can no longer.");
+		for(double f:topics){
+			System.out.println(df.format(f));
+		}
+	}
+}
